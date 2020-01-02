@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<head>
+</head>
+
+<body>
+
+    <div id="board"></div>
+    <div id="arrow"></div>
+    <div>15パズルのようなものです。矢印ボタンを押すと黒マスが移動し、隣接する数字と入れ替わります。</div>
+
+    <script type="text/javascript">
+
+    var UP = 0;
+    var DOWN = 1;
+    var LEFT = 2;
+    var RIGHT = 3;
+
+    var cx = 2;
+    var cy = 2;
+    
+    var cell=[
+         1, 2, 3, 4, 5,
+         6, 0, 8, 0,10,
+        11,12,13,14,15,
+        16, 0,18, 0,20,
+        21,22,23,24,25];
+
+    function clear(){
+        var brd = document.getElementById("board");
+        while(brd.firstChild) brd.removeChild(brd.firstChild);
+    }
+
+    function setCell(num,posx,posy){
+        var b = document.createElement("button");
+        if(num==0) b.style.backgroundColor="#000000";
+        else b.innerHTML=num;
+        b.style.position = "absolute";
+        b.style.left=posx+"px";
+        b.style.top=posy+"px";
+        b.style.width="48px";
+        b.style.height="48px";
+        var brd = document.getElementById("board");
+        brd.appendChild(b); 
+    }
+
+    function draw(){
+        clear();
+        for(var y=0;y<5;y++){
+            for(var x=0;x<5;x++){
+                setCell(cell[x+y*5],x*48+32,y*48+80);
+            }
+        }
+    }
+
+    function swap(x1,y1,x2,y2){
+        var a = x1+y1*5;
+        var b = x2+y2*5;
+        var tmp = cell[a];
+        cell[a]=cell[b];
+        cell[b]=tmp;
+    }
+
+    function moveUp(){
+        if(cy==1) return;
+        swap(cx-1,cy-1,cx-1,cy-2);
+        swap(cx+1,cy-1,cx+1,cy-2);
+        swap(cx-1,cy+1,cx-1,cy);
+        swap(cx+1,cy+1,cx+1,cy);
+        cy=cy-1;
+        draw();
+    }
+
+    function moveDown(){
+        if(cy==3) return;
+        swap(cx-1,cy-1,cx-1,cy);
+        swap(cx+1,cy-1,cx+1,cy);
+        swap(cx-1,cy+1,cx-1,cy+2);
+        swap(cx+1,cy+1,cx+1,cy+2);
+        cy=cy+1;
+        draw();        
+    }
+
+    function moveLeft(){
+        if(cx==1) return;
+        swap(cx-1,cy-1,cx-2,cy-1);
+        swap(cx+1,cy-1,cx,cy-1);
+        swap(cx-1,cy+1,cx-2,cy+1);
+        swap(cx+1,cy+1,cx,cy+1);
+        cx=cx-1;
+        draw();            
+    }
+
+    function moveRight(){
+        if(cx==3) return;
+        swap(cx-1,cy-1,cx,cy-1);
+        swap(cx+1,cy-1,cx+2,cy-1);
+        swap(cx-1,cy+1,cx,cy+1);
+        swap(cx+1,cy+1,cx+2,cy+1);
+        cx=cx+1;
+        draw();             
+    }
+
+    function setArrow(name,posx,posy,func){
+        b = document.createElement("button");
+        b.style.position = "absolute";
+        b.style.left = posx+"px";
+        b.style.top = posy+"px";
+        b.innerHTML = name;
+        b.style.width = "32px";
+        b.style.height = "32px";
+        b.onclick=new Function(func);
+        a = document.getElementById("arrow");
+        a.appendChild(b);
+    }
+
+////////// main /////////
+    setArrow("^",100,350,"moveUp();");
+    setArrow("v",100,350+32,"moveDown()");
+    setArrow("&lt;",100-32,350+32,"moveLeft()");
+    setArrow("&gt;",100+32,350+32,"moveRight()");
+    draw();
+
+    </script>
+</body>
+
+</html>
